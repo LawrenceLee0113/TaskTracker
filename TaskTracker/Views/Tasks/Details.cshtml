@@ -1,0 +1,186 @@
+@model TaskTracker.Models.TaskItem
+
+@{
+    ViewData["Title"] = "任務詳情 - " + Model.TaskName;
+}
+
+<div class="container mx-auto px-4 max-w-6xl">
+    <!-- 頁面標題和動作按鈕 -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">@Model.TaskName</h1>
+            <nav class="text-sm text-gray-500">
+                <a asp-action="Index" class="hover:text-blue-600">任務管理</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-800">任務詳情</span>
+            </nav>
+        </div>
+        
+        <div class="flex space-x-3">
+            <a asp-action="Edit" asp-route-id="@Model.TaskId" 
+               class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200 inline-flex items-center">
+                編輯任務
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.TaskId" 
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200 inline-flex items-center">
+                刪除任務
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- 任務基本資訊 -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">任務資訊</h2>
+                    
+                    <!-- 狀態和優先順序標籤 -->
+                    <div class="flex items-center space-x-4 mb-6">
+                        <span class="@(Model.Status == "已完成" ? "bg-green-100 text-green-800" : 
+                                     Model.Status == "進行中" ? "bg-blue-100 text-blue-800" : 
+                                     "bg-yellow-100 text-yellow-800") 
+                                    px-4 py-2 rounded-full text-sm font-medium">
+                            @Model.Status
+                        </span>
+                        <span class="@(Model.Priority == "高" ? "bg-red-100 text-red-800" : 
+                                     Model.Priority == "中" ? "bg-yellow-100 text-yellow-800" : 
+                                     "bg-green-100 text-green-800") 
+                                    px-4 py-2 rounded-full text-sm font-medium">
+                            優先順序：@Model.Priority
+                        </span>
+                    </div>
+
+                    <!-- 任務描述 -->
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">任務描述</h3>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <p class="text-gray-700 leading-relaxed">@Model.Description</p>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- 時間資訊 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-2">建立日期</h4>
+                            <p class="text-gray-800">@Model.CreatedDate.ToString("yyyy年MM月dd日 HH:mm")</p>
+                        </div>
+
+                        @if (Model.DueDate.HasValue)
+                        {
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 mb-2">到期日期</h4>
+                                <p class="@(Model.DueDate.Value < DateTime.Now && Model.Status != "已完成" ? "text-red-600 font-medium" : "text-gray-800")">
+                                    @Model.DueDate.Value.ToString("yyyy年MM月dd日")
+                                    @if (Model.DueDate.Value < DateTime.Now && Model.Status != "已完成")
+                                    {
+                                        <span class="text-sm text-red-500 ml-2">(已過期)</span>
+                                    }
+                                </p>
+                            </div>
+                        }
+
+                        @if (Model.CompletedDate.HasValue)
+                        {
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 mb-2">完成日期</h4>
+                                <p class="text-green-600 font-medium">@Model.CompletedDate.Value.ToString("yyyy年MM月dd日 HH:mm")</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 關聯資訊側邊欄 ⭐⭐ 關聯查詢展示 -->
+        <div class="lg:col-span-1">
+            <div class="space-y-6">
+                <!-- 所屬專案 -->
+                <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">所屬專案</h3>
+                        @if (Model.Project != null)
+                        {
+                            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition duration-200">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">
+                                        <a asp-controller="Projects" asp-action="Details" asp-route-id="@Model.ProjectId" 
+                                           class="hover:text-blue-600">@Model.Project.ProjectName</a>
+                                    </h4>
+                                    <span class="@(Model.Project.Status == "已完成" ? "bg-green-100 text-green-800" : 
+                                                 Model.Project.Status == "進行中" ? "bg-blue-100 text-blue-800" : 
+                                                 "bg-yellow-100 text-yellow-800") 
+                                                px-2 py-1 rounded-full text-xs font-medium">
+                                        @Model.Project.Status
+                                    </span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Project.Description))
+                                {
+                                    <p class="text-gray-600 text-sm mb-3">@Model.Project.Description</p>
+                                }
+                                <div class="text-xs text-gray-500">
+                                    專案建立：@Model.Project.CreatedDate.ToString("yyyy/MM/dd")
+                                </div>
+                                <div class="mt-3">
+                                    <a asp-controller="Projects" asp-action="Details" asp-route-id="@Model.ProjectId"
+                                       class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                        查看專案詳情 →
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-gray-500">無專案資訊</p>
+                        }
+                    </div>
+                </div>
+
+                <!-- 負責人 -->
+                <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">負責人</h3>
+                        @if (Model.AssignedUser != null)
+                        {
+                            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition duration-200">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">
+                                        <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.AssignedUserId" 
+                                           class="hover:text-blue-600">@Model.AssignedUser.UserName</a>
+                                    </h4>
+                                    <span class="@(Model.AssignedUser.IsActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800") 
+                                                px-2 py-1 rounded-full text-xs font-medium">
+                                        @(Model.AssignedUser.IsActive ? "啟用" : "停用")
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-2">@Model.AssignedUser.Email</p>
+                                @if (!string.IsNullOrEmpty(Model.AssignedUser.Department))
+                                {
+                                    <p class="text-gray-500 text-sm">@Model.AssignedUser.Department</p>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.AssignedUser.Position))
+                                {
+                                    <p class="text-gray-500 text-sm">@Model.AssignedUser.Position</p>
+                                }
+                                <div class="mt-3">
+                                    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.AssignedUserId"
+                                       class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                        查看使用者詳情 →
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-gray-500">無負責人資訊</p>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div> 

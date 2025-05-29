@@ -1,0 +1,130 @@
+@model TaskTracker.Models.TaskItem
+
+@{
+    ViewData["Title"] = "新增任務";
+}
+
+<div class="container mx-auto px-4 max-w-3xl">
+    <!-- 頁面標題 -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">新增任務</h1>
+        <nav class="text-sm text-gray-500">
+            <a asp-action="Index" class="hover:text-blue-600">任務管理</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-800">新增任務</span>
+        </nav>
+    </div>
+
+    <!-- 表單卡片 -->
+    <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+        <div class="p-6">
+            <form asp-action="Create" method="post" class="space-y-6">
+                <div asp-validation-summary="ModelOnly" class="text-red-600"></div>
+
+                <!-- 任務名稱 -->
+                <div>
+                    <label asp-for="TaskName" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                    <input asp-for="TaskName" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                           placeholder="請輸入任務名稱" />
+                    <span asp-validation-for="TaskName" class="text-red-500 text-sm"></span>
+                </div>
+
+                <!-- 任務描述 -->
+                <div>
+                    <label asp-for="Description" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                    <textarea asp-for="Description" rows="4"
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                              placeholder="請輸入任務描述（選填）"></textarea>
+                    <span asp-validation-for="Description" class="text-red-500 text-sm"></span>
+                </div>
+
+                <!-- 所屬專案和負責人 ⭐⭐ 關聯選擇下拉選單 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label asp-for="ProjectId" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                        <select asp-for="ProjectId" asp-items="ViewBag.ProjectId"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">-- 請選擇專案 --</option>
+                        </select>
+                        <span asp-validation-for="ProjectId" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="AssignedUserId" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                        <select asp-for="AssignedUserId" asp-items="ViewBag.AssignedUserId"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">-- 請選擇負責人 --</option>
+                        </select>
+                        <span asp-validation-for="AssignedUserId" class="text-red-500 text-sm"></span>
+                    </div>
+                </div>
+
+                <!-- 優先順序和狀態 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label asp-for="Priority" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                        <select asp-for="Priority" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="低">低</option>
+                            <option value="中" selected>中</option>
+                            <option value="高">高</option>
+                        </select>
+                        <span asp-validation-for="Priority" class="text-red-500 text-sm"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Status" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                        <select asp-for="Status" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="待辦" selected>待辦</option>
+                            <option value="進行中">進行中</option>
+                            <option value="已完成">已完成</option>
+                            <option value="暫停">暫停</option>
+                            <option value="已取消">已取消</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-red-500 text-sm"></span>
+                    </div>
+                </div>
+
+                <!-- 到期日 -->
+                <div>
+                    <label asp-for="DueDate" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                    <input asp-for="DueDate" type="date"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    <span asp-validation-for="DueDate" class="text-red-500 text-sm"></span>
+                    <div class="mt-1 text-xs text-gray-500">
+                        設定任務的預計完成日期（選填）
+                    </div>
+                </div>
+
+                <!-- 關聯說明 -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 按鈕區域 ⭐ -->
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                    <a asp-action="Index" 
+                       class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium transition duration-200">
+                        取消
+                    </a>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-medium transition duration-200 inline-flex items-center">
+                        建立任務
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

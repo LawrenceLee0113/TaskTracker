@@ -1,0 +1,158 @@
+@model TaskTracker.Models.User
+
+@{
+    ViewData["Title"] = "刪除使用者 - " + Model.UserName;
+}
+
+<div class="container mx-auto px-4 max-w-4xl">
+    <!-- 頁面標題 -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-red-600 mb-2">刪除使用者</h1>
+        <nav class="text-sm text-gray-500">
+            <a asp-action="Index" class="hover:text-blue-600">使用者管理</a>
+            <span class="mx-2">/</span>
+            <a asp-action="Details" asp-route-id="@Model.UserId" class="hover:text-blue-600">@Model.UserName</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-800">刪除確認</span>
+        </nav>
+    </div>
+
+    <!-- 警告提示 -->
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                    確定要刪除此使用者嗎？
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                    <p>此操作無法復原。刪除使用者將會影響以下相關資料：</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- 使用者資訊 -->
+        <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">使用者資訊</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">使用者名稱</span>
+                        <p class="mt-1 text-lg font-semibold text-gray-800">@Model.UserName</p>
+                    </div>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">電子郵件</span>
+                        <p class="mt-1 text-gray-800">@Model.Email</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Department))
+                    {
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">部門</span>
+                            <p class="mt-1 text-gray-800">@Model.Department</p>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Position))
+                    {
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">職位</span>
+                            <p class="mt-1 text-gray-800">@Model.Position</p>
+                        </div>
+                    }
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">啟用狀態</span>
+                        <div class="mt-1">
+                            <span class="@(Model.IsActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800") 
+                                        px-2 py-1 rounded-full text-sm font-medium">
+                                @(Model.IsActive ? "啟用" : "停用")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">建立日期</span>
+                        <p class="mt-1 text-gray-800">@Model.CreatedDate.ToString("yyyy年MM月dd日")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 影響分析 -->
+        <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">影響分析</h2>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <div>
+                            <div class="font-medium text-yellow-800">負責任務</div>
+                            <div class="text-sm text-yellow-600">此使用者目前負責的任務數量</div>
+                        </div>
+                        <div class="text-2xl font-bold text-yellow-600">@Model.Tasks.Count</div>
+                    </div>
+
+                    @if (Model.Tasks.Any())
+                    {
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <h4 class="font-medium text-red-800 mb-2">將受影響的任務：</h4>
+                            <div class="space-y-2 max-h-48 overflow-y-auto">
+                                @foreach (var task in Model.Tasks.Take(10))
+                                {
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="text-red-700">@task.TaskName</span>
+                                        <span class="text-red-600">(@task.Project?.ProjectName)</span>
+                                    </div>
+                                }
+                                @if (Model.Tasks.Count > 10)
+                                {
+                                    <div class="text-sm text-red-600 font-medium">
+                                        ... 還有 @(Model.Tasks.Count - 10) 個任務
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 確認刪除表單 -->
+    <div class="mt-8 bg-white rounded-lg shadow-lg border border-red-200">
+        <div class="p-6">
+            <form asp-action="Delete" method="post">
+                <input asp-for="UserId" type="hidden" />
+                
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">最終確認</h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            請確認您真的要刪除使用者「@Model.UserName」？
+                        </p>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <a asp-action="Details" asp-route-id="@Model.UserId" 
+                           class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium transition duration-200">
+                            取消
+                        </a>
+                        <button type="submit" 
+                                class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium transition duration-200 inline-flex items-center">
+                            確認刪除
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

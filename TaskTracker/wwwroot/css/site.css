@@ -1,0 +1,227 @@
+/* 🎨 TaskTracker - 現代化極簡主義 UI 樣式系統 */
+@import "tailwindcss";
+
+/* 🔤 Google Fonts - Inter 字體載入 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* 🌍 全域重置和基礎樣式 */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  background-color: #F9FAFB;
+  color: #1F2937;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 🎯 現代化焦點樣式 */
+:focus {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* 📱 響應式字體大小 */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* 🎨 自訂 CSS 類別 */
+
+/* 🔘 現代化按鈕樣式 */
+.btn-primary {
+  @apply bg-primary-500 hover:bg-primary-600 text-white font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-soft hover:shadow-medium focus:ring-4 focus:ring-primary-200;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-6 py-3 rounded-xl transition-all duration-200 border border-gray-200 hover:border-gray-300;
+}
+
+.btn-success {
+  @apply bg-success-500 hover:bg-success-600 text-white font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-soft hover:shadow-medium;
+}
+
+.btn-warning {
+  @apply bg-warning-500 hover:bg-warning-600 text-white font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-soft hover:shadow-medium;
+}
+
+.btn-danger {
+  @apply bg-danger-500 hover:bg-danger-600 text-white font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-soft hover:shadow-medium;
+}
+
+/* 📋 卡片樣式 */
+.card {
+  @apply bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden;
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-medium hover:-translate-y-1;
+}
+
+/* 🏷️ 狀態標籤 */
+.badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.badge-primary {
+  @apply bg-primary-100 text-primary-800;
+}
+
+.badge-success {
+  @apply bg-success-100 text-success-800;
+}
+
+.badge-warning {
+  @apply bg-warning-100 text-warning-800;
+}
+
+.badge-danger {
+  @apply bg-danger-100 text-danger-800;
+}
+
+.badge-gray {
+  @apply bg-gray-100 text-gray-700;
+}
+
+/* 📊 進度條 */
+.progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-2;
+}
+
+.progress-fill {
+  @apply h-2 rounded-full transition-all duration-500;
+}
+
+/* 📝 表單樣式 */
+.form-input {
+  @apply w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200 bg-white;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-2;
+}
+
+.form-error {
+  @apply text-danger-600 text-sm mt-1;
+}
+
+/* 🗂️ 導航樣式 */
+.nav-link {
+  @apply flex items-center px-4 py-3 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all duration-200 font-medium;
+}
+
+.nav-link.active {
+  @apply text-primary-600 bg-primary-50;
+}
+
+/* 📱 響應式隱藏/顯示 */
+.mobile-only {
+  @apply block sm:hidden;
+}
+
+.desktop-only {
+  @apply hidden sm:block;
+}
+
+/* 💫 載入動畫 */
+.loading-spinner {
+  @apply animate-spin rounded-full border-4 border-gray-200 border-t-primary-500;
+}
+
+/* 🎭 滑入動畫 */
+.slide-enter {
+  @apply transform transition-all duration-300 ease-out translate-y-8 opacity-0;
+}
+
+.slide-enter-active {
+  @apply translate-y-0 opacity-100;
+}
+
+/* 📱 移動端最適化 */
+@media (max-width: 640px) {
+  .card {
+    @apply rounded-xl;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-success, .btn-warning, .btn-danger {
+    @apply px-4 py-2 text-sm;
+  }
+}
+
+/* 🌙 深色模式準備 (未來使用) */
+@media (prefers-color-scheme: dark) {
+  .dark-mode-ready {
+    /* 深色模式樣式將在此定義 */
+  }
+}
+
+/* 🎨 客製化滾動條 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 🔗 連結樣式 */
+a {
+  @apply text-primary-600 hover:text-primary-700 transition-colors duration-200;
+}
+
+/* 📊 統計卡片專用樣式 */
+.stat-card {
+  @apply card p-6 text-center;
+}
+
+.stat-number {
+  @apply text-3xl font-bold text-gray-900 mb-2;
+}
+
+.stat-label {
+  @apply text-sm text-gray-600 uppercase tracking-wide;
+}
+
+/* 🎯 懸停效果 */
+.hover-lift {
+  @apply transition-transform duration-200 hover:-translate-y-1;
+}
+
+.hover-glow {
+  @apply transition-shadow duration-200 hover:shadow-glow;
+}

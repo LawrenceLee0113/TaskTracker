@@ -1,0 +1,217 @@
+@model TaskTracker.Models.TaskItem
+
+@{
+    ViewData["Title"] = "刪除任務 - " + Model.TaskName;
+}
+
+<div class="container mx-auto px-4 max-w-4xl">
+    <!-- 頁面標題 -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-red-600 mb-2">刪除任務</h1>
+        <nav class="text-sm text-gray-500">
+            <a asp-action="Index" class="hover:text-blue-600">任務管理</a>
+            <span class="mx-2">/</span>
+            <a asp-action="Details" asp-route-id="@Model.TaskId" class="hover:text-blue-600">@Model.TaskName</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-800">刪除確認</span>
+        </nav>
+    </div>
+
+    <!-- 警告提示 -->
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                    確定要刪除此任務嗎？
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                    <p>此操作無法復原。刪除任務會移除所有相關資料。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- 任務詳細資訊 -->
+        <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">任務資訊</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">任務名稱</span>
+                        <p class="mt-1 text-lg font-semibold text-gray-800">@Model.TaskName</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">任務描述</span>
+                            <p class="mt-1 text-gray-800">@Model.Description</p>
+                        </div>
+                    }
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">優先順序</span>
+                            <div class="mt-1">
+                                <span class="@(Model.Priority == "高" ? "bg-red-100 text-red-800" : 
+                                             Model.Priority == "中" ? "bg-yellow-100 text-yellow-800" : 
+                                             "bg-green-100 text-green-800") 
+                                            px-2 py-1 rounded-full text-sm font-medium">
+                                    @Model.Priority
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">任務狀態</span>
+                            <div class="mt-1">
+                                <span class="@(Model.Status == "已完成" ? "bg-green-100 text-green-800" : 
+                                             Model.Status == "進行中" ? "bg-blue-100 text-blue-800" : 
+                                             "bg-yellow-100 text-yellow-800") 
+                                            px-2 py-1 rounded-full text-sm font-medium">
+                                    @Model.Status
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">建立日期</span>
+                        <p class="mt-1 text-gray-800">@Model.CreatedDate.ToString("yyyy年MM月dd日 HH:mm")</p>
+                    </div>
+
+                    @if (Model.DueDate.HasValue)
+                    {
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">到期日期</span>
+                            <p class="mt-1 text-gray-800">@Model.DueDate.Value.ToString("yyyy年MM月dd日")</p>
+                        </div>
+                    }
+
+                    @if (Model.CompletedDate.HasValue)
+                    {
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">完成日期</span>
+                            <p class="mt-1 text-green-600 font-medium">@Model.CompletedDate.Value.ToString("yyyy年MM月dd日 HH:mm")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- 關聯資訊 ⭐⭐ 關聯查詢展示 -->
+        <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">關聯資訊</h2>
+                
+                <div class="space-y-6">
+                    <!-- 所屬專案 -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-3">所屬專案</h4>
+                        @if (Model.Project != null)
+                        {
+                            <div class="border border-gray-200 rounded-lg p-4 bg-blue-50">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-semibold text-gray-800">@Model.Project.ProjectName</h5>
+                                    <span class="@(Model.Project.Status == "已完成" ? "bg-green-100 text-green-800" : 
+                                                 Model.Project.Status == "進行中" ? "bg-blue-100 text-blue-800" : 
+                                                 "bg-yellow-100 text-yellow-800") 
+                                                px-2 py-1 rounded-full text-xs font-medium">
+                                        @Model.Project.Status
+                                    </span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Project.Description))
+                                {
+                                    <p class="text-gray-600 text-sm mb-2">@Model.Project.Description</p>
+                                }
+                                <div class="text-xs text-gray-500">
+                                    建立：@Model.Project.CreatedDate.ToString("yyyy/MM/dd")
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-gray-500">無專案資訊</p>
+                        }
+                    </div>
+
+                    <!-- 負責人 -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-3">負責人</h4>
+                        @if (Model.AssignedUser != null)
+                        {
+                            <div class="border border-gray-200 rounded-lg p-4 bg-green-50">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-semibold text-gray-800">@Model.AssignedUser.UserName</h5>
+                                    <span class="@(Model.AssignedUser.IsActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800") 
+                                                px-2 py-1 rounded-full text-xs font-medium">
+                                        @(Model.AssignedUser.IsActive ? "啟用" : "停用")
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-1">@Model.AssignedUser.Email</p>
+                                @if (!string.IsNullOrEmpty(Model.AssignedUser.Department))
+                                {
+                                    <p class="text-gray-500 text-sm">@Model.AssignedUser.Department</p>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.AssignedUser.Position))
+                                {
+                                    <p class="text-gray-500 text-sm">@Model.AssignedUser.Position</p>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-gray-500">無負責人資訊</p>
+                        }
+                    </div>
+
+                    <!-- 刪除影響說明 -->
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <h4 class="font-medium text-yellow-800 mb-2">刪除影響：</h4>
+                        <ul class="text-sm text-yellow-700 space-y-1">
+                            <li>• 此任務將從專案任務列表中移除</li>
+                            <li>• 負責人的任務統計將會更新</li>
+                            <li>• 任務相關的所有記錄將被永久刪除</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 確認刪除表單 -->
+    <div class="mt-8 bg-white rounded-lg shadow-lg border border-red-200">
+        <div class="p-6">
+            <form asp-action="Delete" method="post">
+                <input asp-for="TaskId" type="hidden" />
+                
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">最終確認</h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            請確認您真的要刪除任務「@Model.TaskName」？
+                        </p>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <a asp-action="Details" asp-route-id="@Model.TaskId" 
+                           class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium transition duration-200">
+                            取消
+                        </a>
+                        <button type="submit" 
+                                class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium transition duration-200 inline-flex items-center">
+                            確認刪除
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 
