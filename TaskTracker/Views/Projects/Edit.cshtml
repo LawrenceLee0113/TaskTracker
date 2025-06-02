@@ -76,48 +76,6 @@
                     <span asp-validation-for="Status" class="text-red-500 text-sm"></span>
                 </div>
 
-                <!-- 專案統計顯示 -->
-                <div class="bg-gray-50 p-4 rounded-md">
-                    <h3 class="text-sm font-medium text-gray-700 mb-3">專案統計</h3>
-                    <div class="grid grid-cols-3 gap-4 text-center">
-                        <div>
-                            <div class="text-lg font-bold text-blue-600">@Model.Tasks.Count</div>
-                            <div class="text-xs text-gray-500">總任務數</div>
-                        </div>
-                        <div>
-                            <div class="text-lg font-bold text-green-600">@Model.Tasks.Count(t => t.Status == "已完成")</div>
-                            <div class="text-xs text-gray-500">已完成</div>
-                        </div>
-                        <div>
-                            <div class="text-lg font-bold text-yellow-600">@Model.Tasks.Count(t => t.Status == "進行中")</div>
-                            <div class="text-xs text-gray-500">進行中</div>
-                        </div>
-                    </div>
-                    <div class="mt-3 text-xs text-gray-600">
-                        <strong>建立日期：</strong>@Model.CreatedDate.ToString("yyyy年MM月dd日 HH:mm")
-                    </div>
-                </div>
-
-                <!-- 編輯提醒 -->
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <h3 class="text-sm font-medium text-blue-800">編輯提醒</h3>
-                            <div class="mt-2 text-sm text-blue-700">
-                                <ul class="list-disc pl-5 space-y-1">
-                                    <li>變更專案狀態可能會影響相關任務的進度追蹤</li>
-                                    <li>此專案目前包含 @Model.Tasks.Count 個任務</li>
-                                    <li>編輯專案資訊不會影響現有任務的分配</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- 按鈕區域 ⭐ -->
                 <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">

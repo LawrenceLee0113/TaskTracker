@@ -17,6 +17,16 @@ namespace TaskTracker.Models
         [Display(Name = "電子郵件")]
         public string Email { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "密碼為必填欄位")]
+        [StringLength(255, ErrorMessage = "密碼不可超過255個字元")]
+        [Display(Name = "密碼")]
+        public string Password { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "角色為必填欄位")]
+        [StringLength(20, ErrorMessage = "角色名稱不可超過20個字元")]
+        [Display(Name = "角色")]
+        public string Role { get; set; } = "User"; // User 或 Admin
+
         [StringLength(50, ErrorMessage = "部門名稱不可超過50個字元")]
         [Display(Name = "部門")]
         public string? Department { get; set; }

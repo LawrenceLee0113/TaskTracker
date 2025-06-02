@@ -9,5 +9,7 @@ namespace TaskTracker.ViewModels
         public int InProgressTasks { get; set; }
         public int PendingTasks { get; set; }
         public int CompletionRate { get; set; }
+        public bool IsAdmin { get; set; }
+        public string CurrentUserName { get; set; } = string.Empty;
     }
 } 

@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data;
 using TaskTracker.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaskTracker.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly TaskTrackerContext _context;
@@ -53,7 +55,7 @@ namespace TaskTracker.Controllers
         // POST: Users/Create (Create - 處理新增) ⭐
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserName,Email,Department,Position,IsActive")] User user)
+        public async Task<IActionResult> Create([Bind("UserName,Email,Password,Role,Department,Position,IsActive")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +87,7 @@ namespace TaskTracker.Controllers
         // POST: Users/Edit/5 (Update - 處理編輯) ⭐
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,UserName,Email,Department,Position,IsActive,CreatedDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,UserName,Email,Password,Role,Department,Position,IsActive,CreatedDate")] User user)
         {
             if (id != user.UserId)
             {

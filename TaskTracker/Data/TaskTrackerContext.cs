@@ -76,6 +76,8 @@ namespace TaskTracker.Data
                     UserId = 1, 
                     UserName = "張小明", 
                     Email = "ming.zhang@example.com", 
+                    Password = "password123",
+                    Role = "User",
                     Department = "開發部",
                     Position = "前端工程師",
                     IsActive = true,
@@ -86,6 +88,8 @@ namespace TaskTracker.Data
                     UserId = 2, 
                     UserName = "李小華", 
                     Email = "hua.li@example.com", 
+                    Password = "password123",
+                    Role = "User",
                     Department = "開發部",
                     Position = "後端工程師",
                     IsActive = true,
@@ -96,8 +100,22 @@ namespace TaskTracker.Data
                     UserId = 3, 
                     UserName = "王小美", 
                     Email = "mei.wang@example.com", 
+                    Password = "password123",
+                    Role = "User",
                     Department = "設計部",
                     Position = "UI設計師",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now.AddDays(-30)
+                },
+                new User 
+                { 
+                    UserId = 4, 
+                    UserName = "系統管理員", 
+                    Email = "admin@example.com", 
+                    Password = "password123",
+                    Role = "Admin",
+                    Department = "IT部",
+                    Position = "系統管理員",
                     IsActive = true,
                     CreatedDate = DateTime.Now.AddDays(-30)
                 }

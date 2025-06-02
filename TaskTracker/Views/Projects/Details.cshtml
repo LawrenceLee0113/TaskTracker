@@ -21,9 +21,9 @@
                class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200 inline-flex items-center">
                 編輯專案
             </a>
-            <a asp-action="Index" 
-               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
-                返回列表
+            <a asp-action="Delete" asp-route-id="@Model.ProjectId" 
+               class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
+                刪除專案
             </a>
         </div>
     </div>

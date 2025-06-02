@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data;
 using TaskTracker.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace TaskTracker.Controllers
 {
+    [Authorize]
     public class TasksController : Controller
     {
         private readonly TaskTrackerContext _context;
@@ -18,10 +21,22 @@ namespace TaskTracker.Controllers
         // GET: Tasks (Read - 列表頁) ⭐
         public async Task<IActionResult> Index()
         {
-            var tasks = await _context.Tasks
+            var currentUserRole = User.FindFirstValue(ClaimTypes.Role);
+            var isAdmin = currentUserRole == "Admin";
+
+            IQueryable<TaskItem> tasksQuery = _context.Tasks
                 .Include(t => t.Project)
-                .Include(t => t.AssignedUser)
-                .ToListAsync();
+                .Include(t => t.AssignedUser);
+
+            if (!isAdmin)
+            {
+                // 一般使用者只能看到自己的任務
+                var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                tasksQuery = tasksQuery.Where(t => t.AssignedUserId == currentUserId);
+            }
+
+            var tasks = await tasksQuery.ToListAsync();
+            ViewBag.IsAdmin = isAdmin;
             return View(tasks);
         }
 
@@ -43,10 +58,20 @@ namespace TaskTracker.Controllers
                 return NotFound();
             }
 
+            // 檢查權限：管理員或任務負責人才能查看詳情
+            var currentUserRole = User.FindFirstValue(ClaimTypes.Role);
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            if (currentUserRole != "Admin" && task.AssignedUserId != currentUserId)
+            {
+                return Forbid();
+            }
+
             return View(task);
         }
 
         // GET: Tasks/Create (Create - 新增表單頁) ⭐
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["ProjectId"] = new SelectList(_context.Projects, "ProjectId", "ProjectName");
@@ -57,6 +82,7 @@ namespace TaskTracker.Controllers
         // POST: Tasks/Create (Create - 處理新增) ⭐
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("TaskName,Description,ProjectId,AssignedUserId,Priority,Status,DueDate")] TaskItem task)
         {
             if (ModelState.IsValid)
@@ -85,6 +111,16 @@ namespace TaskTracker.Controllers
             {
                 return NotFound();
             }
+
+            // 檢查權限：管理員或任務負責人才能編輯
+            var currentUserRole = User.FindFirstValue(ClaimTypes.Role);
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            if (currentUserRole != "Admin" && task.AssignedUserId != currentUserId)
+            {
+                return Forbid();
+            }
+
             ViewData["ProjectId"] = new SelectList(_context.Projects, "ProjectId", "ProjectName", task.ProjectId);
             ViewData["AssignedUserId"] = new SelectList(_context.Users.Where(u => u.IsActive), "UserId", "UserName", task.AssignedUserId);
             return View(task);
@@ -98,6 +134,15 @@ namespace TaskTracker.Controllers
             if (id != task.TaskId)
             {
                 return NotFound();
+            }
+
+            // 檢查權限：管理員或任務負責人才能編輯
+            var currentUserRole = User.FindFirstValue(ClaimTypes.Role);
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            if (currentUserRole != "Admin" && task.AssignedUserId != currentUserId)
+            {
+                return Forbid();
             }
 
             if (ModelState.IsValid)
@@ -138,6 +183,7 @@ namespace TaskTracker.Controllers
         }
 
         // GET: Tasks/Delete/5 (Delete - 刪除確認頁) ⭐
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -161,6 +207,7 @@ namespace TaskTracker.Controllers
         // POST: Tasks/Delete/5 (Delete - 處理刪除) ⭐
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var task = await _context.Tasks.FindAsync(id);
