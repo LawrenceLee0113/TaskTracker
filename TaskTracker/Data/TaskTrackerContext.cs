@@ -45,6 +45,9 @@ namespace TaskTracker.Data
 
         private void SeedData(ModelBuilder modelBuilder)
         {
+            // 定義固定的基準日期
+            var baseDate = new DateTime(2024, 12, 1);
+            
             // 專案種子資料
             modelBuilder.Entity<Project>().HasData(
                 new Project 
@@ -53,9 +56,9 @@ namespace TaskTracker.Data
                     ProjectName = "TaskTracker 系統開發", 
                     Description = "開發任務追蹤系統，展示 CRUD 功能", 
                     Status = "進行中",
-                    StartDate = DateTime.Now.AddDays(-30),
-                    EndDate = DateTime.Now.AddDays(30),
-                    CreatedDate = DateTime.Now.AddDays(-30)
+                    StartDate = baseDate.AddDays(-30),
+                    EndDate = baseDate.AddDays(30),
+                    CreatedDate = baseDate.AddDays(-30)
                 },
                 new Project 
                 { 
@@ -63,9 +66,9 @@ namespace TaskTracker.Data
                     ProjectName = "期末報告準備", 
                     Description = "準備期末報告相關文件和展示", 
                     Status = "進行中",
-                    StartDate = DateTime.Now.AddDays(-7),
-                    EndDate = DateTime.Now.AddDays(14),
-                    CreatedDate = DateTime.Now.AddDays(-7)
+                    StartDate = baseDate.AddDays(-7),
+                    EndDate = baseDate.AddDays(14),
+                    CreatedDate = baseDate.AddDays(-7)
                 }
             );
 
@@ -81,7 +84,7 @@ namespace TaskTracker.Data
                     Department = "開發部",
                     Position = "前端工程師",
                     IsActive = true,
-                    CreatedDate = DateTime.Now.AddDays(-30)
+                    CreatedDate = baseDate.AddDays(-30)
                 },
                 new User 
                 { 
@@ -93,7 +96,7 @@ namespace TaskTracker.Data
                     Department = "開發部",
                     Position = "後端工程師",
                     IsActive = true,
-                    CreatedDate = DateTime.Now.AddDays(-30)
+                    CreatedDate = baseDate.AddDays(-30)
                 },
                 new User 
                 { 
@@ -105,7 +108,7 @@ namespace TaskTracker.Data
                     Department = "設計部",
                     Position = "UI設計師",
                     IsActive = true,
-                    CreatedDate = DateTime.Now.AddDays(-30)
+                    CreatedDate = baseDate.AddDays(-30)
                 },
                 new User 
                 { 
@@ -117,7 +120,7 @@ namespace TaskTracker.Data
                     Department = "IT部",
                     Position = "系統管理員",
                     IsActive = true,
-                    CreatedDate = DateTime.Now.AddDays(-30)
+                    CreatedDate = baseDate.AddDays(-30)
                 }
             );
 
@@ -132,9 +135,9 @@ namespace TaskTracker.Data
                     AssignedUserId = 2,
                     Priority = "高",
                     Status = "已完成",
-                    DueDate = DateTime.Now.AddDays(-20),
-                    CompletedDate = DateTime.Now.AddDays(-21),
-                    CreatedDate = DateTime.Now.AddDays(-25)
+                    DueDate = baseDate.AddDays(-20),
+                    CompletedDate = baseDate.AddDays(-21),
+                    CreatedDate = baseDate.AddDays(-25)
                 },
                 new TaskItem 
                 { 
@@ -145,8 +148,8 @@ namespace TaskTracker.Data
                     AssignedUserId = 2,
                     Priority = "高",
                     Status = "進行中",
-                    DueDate = DateTime.Now.AddDays(10),
-                    CreatedDate = DateTime.Now.AddDays(-20)
+                    DueDate = baseDate.AddDays(10),
+                    CreatedDate = baseDate.AddDays(-20)
                 },
                 new TaskItem 
                 { 
@@ -157,8 +160,8 @@ namespace TaskTracker.Data
                     AssignedUserId = 3,
                     Priority = "中",
                     Status = "待辦",
-                    DueDate = DateTime.Now.AddDays(15),
-                    CreatedDate = DateTime.Now.AddDays(-15)
+                    DueDate = baseDate.AddDays(15),
+                    CreatedDate = baseDate.AddDays(-15)
                 },
                 new TaskItem 
                 { 
@@ -169,8 +172,8 @@ namespace TaskTracker.Data
                     AssignedUserId = 1,
                     Priority = "高",
                     Status = "進行中",
-                    DueDate = DateTime.Now.AddDays(10),
-                    CreatedDate = DateTime.Now.AddDays(-5)
+                    DueDate = baseDate.AddDays(10),
+                    CreatedDate = baseDate.AddDays(-5)
                 }
             );
         }

@@ -9,8 +9,7 @@ builder.Services.AddControllersWithViews();
 
 // 新增 Entity Framework Core 服務
 builder.Services.AddDbContext<TaskTrackerContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ??
-        "Data Source=TaskTracker.db"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 新增認證服務
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -31,7 +30,18 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<TaskTrackerContext>();
-    context.Database.EnsureCreated();
+    try
+    {
+        // 使用 Migrations 來建立和更新資料庫
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        // 如果沒有 migrations，則使用 EnsureCreated
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogWarning("Database migration failed, attempting to create database: {Error}", ex.Message);
+        context.Database.EnsureCreated();
+    }
 }
 
 // Configure the HTTP request pipeline.

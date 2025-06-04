@@ -31,6 +31,10 @@ yarn-error.log*
 *.db-shm
 *.db-wal
 
+# Docker
+docker-compose.override.yml
+.dockerignore
+
 # IDE
 .idea/
 *.swp
@@ -64,3 +68,7 @@ bld/
 
 # Tailwind CSS
 tailwindcss 
+
+# SQL Server 相關敏感資訊（如果有自訂配置）
+# 注意：預設的 docker-compose.yml 和 appsettings.json 包含開發用密碼，生產環境應使用環境變數
+# appsettings.Production.json 
